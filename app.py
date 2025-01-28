@@ -6,6 +6,7 @@ from glob import escape
 from flask import Flask, url_for, render_template
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
+from flask import request,url_for,redirect,flash#redirect将用户重定向到另一个URL
 
 WIN=sys.platform.startswith('win')
 if WIN:  # 如果是 Windows 系统，使用三个斜线
@@ -28,14 +29,29 @@ def inject_user():
 def page_not_found(e):
     return render_template('404.html'),404
 
-@app.route('/')
+@app.route('/',methods=['GET','POST'])
 @app.route('/home')
 @app.route('/index')
 
 def index():
-    user=User.query.first()
-    movies=Movie.query.all()
-    return render_template('index.html',  movies=movies)
+    if request.method == 'POST':  # 判断是否是 POST 请求
+        # 获取表单数据
+        title = request.form.get('title')  # 传入表单对应输入字段的 name 值
+        year = request.form.get('year')
+        # 验证数据
+        if not title or not year or len(year) > 4 or len(title) > 60:
+            flash('Invalid input.')  # 显示错误提示
+            return redirect(url_for('index'))  # 重定向回主页
+        # 保存表单数据到数据库
+        movie = Movie(title=title, year=year)  # 创建记录
+        db.session.add(movie)  # 添加到数据库会话
+        db.session.commit()  # 提交数据库会话
+        flash('Item created.')  # 显示成功创建的提示
+        return redirect(url_for('index'))  # 重定向回主页
+
+    movies = Movie.query.all()
+    return render_template('index.html', movies=movies)
+
 def hello():
     return '<h1>Hello qing!</h1><img src="https://img-cdn.hltv.org/gallerypicture/K-G8CCzpFD4-IxV7rMHg-w.jpg?auto=compress&ixlib=java-2.1.0&m=%2Fm.png&mw=713&mx=132&my=3167&q=75&w=5352&s=42a36be0d798c5089f63cb2ae3d759e7"width="350" height="200">'
 
@@ -48,7 +64,7 @@ def test_url_for():
     # 下面是一些调用示例（请访问 http://localhost:5000/test 后在命令行窗口查看输出的 URL）：
     print(url_for('hello'))  # 生成 hello 视图函数对应的 URL，将会输出：/
     # 注意下面两个调用是如何生成包含 URL 变量的 URL 的
-    print(url_for('user_page', name='qing'))  # 输出：/user/greyli
+    print(url_for('user_page', name='greyli'))  # 输出：/user/greyli
     print(url_for('user_page', name='peter'))  # 输出：/user/peter
     print(url_for('test_url_for'))  # 输出：/test
     # 下面这个调用传入了多余的关键字参数，它们会被作为查询字符串附加到 URL 后面。
@@ -100,3 +116,33 @@ def forge():
         db.session.add(movie)
     db.session.commit()
     click.echo('Done')
+
+@app.route('/movie/edit/<int:movie_id>',methods=['GET','POST'])
+def edit(movie_id):
+    movie=Movie.query.get_or_404(movie_id)
+
+    if request.method=='POST': # 处理编辑表单的提交请求
+        title=request.form['title']
+        year=request.form['year']
+        if not title or not year or len(year) != 4 or len(title) > 60:
+            flash('Invalid input.')
+            return redirect(url_for('edit', movie_id=movie_id))  # 重定向回对应的编辑页面
+
+        movie.title = title  # 更新标题
+        movie.year = year  # 更新年份
+        db.session.commit()  # 提交数据库会话
+        flash('Item updated.')
+        return redirect(url_for('index'))  # 重定向回主页
+
+    return render_template('edit.html', movie=movie)  # 传入被编辑的电影记录
+
+@app.route('/movie/delete/<int:movie_id>',methods=['POST'])# 限定只接受 POST
+def delete(movie_id):
+    movie=Movie.query.get_or_404(movie_id) # 获取电影记录
+    db.session.delete(movie)# 删除对应的记录
+    db.session.commit()# 提交数据库会话
+    flash('Item deleted.')
+    return redirect(url_for('index'))# 重定向回主页
+
+
+

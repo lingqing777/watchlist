@@ -78,3 +78,43 @@ nav li a :hover{
     border-radius: 5px;
     padding: 3px 5px;
 }
+/* 覆盖某些浏览器对 input 元素定义的字体 */
+input[type=submit]{/*它选中所有 type 属性值为 submit 的 input 元素，也就是提交按钮。*/
+    font-family: inherit;
+    /*将这些提交按钮的字体族设置为继承其父元素的字体族。这样做的目的是使按钮的字体与周围文本的字体保持一致，避免浏览器对提交按钮使用默认的、可能与页面其他部分不协调的字体。*/
+}
+input[type=text]{
+    border: 1px solid #ddd;
+}
+input[name=year]{
+    width: 50px;
+}
+.btn{
+    font-size: 12px;/*元素内文本的字体大小设置为12像素*/
+    padding: 3px 5px;/*为元素内部添加内边距。 padding 属性接受两个值，第一个值 3px 表示上下方向的内边距为3像素，第二个值 5px 表示左右方向的内边距为5像素。*/
+    text-decoration: none;/*去除链接（ <a> 标签）的下划线*/
+    cursor: pointer;/*鼠标悬停在该元素上时，鼠标指针会显示为手型（指针形状*/
+    background-color: white;
+    color: black;/*元素内文本的颜色*/
+    border: 1px solid #555555;/*为元素添加边框。边框宽度为1像素，样式为实线，颜色为 #55555*/
+    border-radius: 5px;/*使元素的四个角变成圆角，圆角半径为5像素*/
+}
+.btn:hover{/*.btn 类在鼠标悬停（ :hover ）状态下的样式*/
+    text-decoration: none;
+    background-color: black;
+    color: white;
+    border: 1px solid black;
+}
+.alert{
+    position: relative;/*元素的定位模式设置为相对定位*/
+    padding: 7px;
+    margin: 7px 0;/*margin: 7px 0;  是一种简写方式，它表示元素的上下外边距（ margin - top  和  margin - bottom ）为7像素，而左右外边距（ margin - left  和  margin - right ）为0像素。*/
+    border: 1px solid transparent;
+    color: #004085;
+    background-color: #cce5ff;
+    border-color: #b8daff;
+    border-radius: 5px;
+}
+.inline-form{
+    display: inline;
+}
