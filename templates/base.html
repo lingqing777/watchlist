@@ -20,6 +20,12 @@
     </h2>
     <nav>
         <ul>
+            {% if current_user.is_authenticated %}
+                <li><a href="{{url_for('settings')}}">Settings</a></li>
+                <li><a href="{{url_for('logout')}}">Logout</a></li>
+            {% else %}
+                <li><a href="{{url_for('login')}}">Login</a></li>
+            {% endif %}
             <li><a href="{{url_for('index')}}">Home</a></li>
         </ul>
     </nav>
