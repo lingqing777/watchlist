@@ -4,11 +4,11 @@
 <p>{{ movies|length }} Titles</p>
 <!-- 在模板中可以直接使用 current_user 变量 -->
  {% if current_user.is_authenticated %}
-<from method="post">
+<form method="post">
     Name <input type="text" name="title" autocomplete="off" required>
     Year <input type="text" name="year" autocomplete="off" required>
     <input class="btn" type="submit" name="submit" value="Add">
-</from>
+</form>
 {% endif %}
 <ul class="movie-list" >
     {% for movie in movies %}

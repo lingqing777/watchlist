@@ -1,7 +1,9 @@
 import unittest
 
 # 导入命令函数
-from app import app, db, Movie, User, forge, initdb
+from watchlist import app, db
+from watchlist.models import Movie, User
+from watchlist.commands import forge, initdb
 
 class WatchlistTestCase(unittest.TestCase):
 
@@ -57,7 +59,7 @@ class WatchlistTestCase(unittest.TestCase):
     # 辅助方法，用于登入用户
     def login(self):
         self.client.post('/login',data=dict(
-            username='tset',
+            username='test',
             password='123'
         ),follow_redirects=True)
 
@@ -72,7 +74,7 @@ class WatchlistTestCase(unittest.TestCase):
         ),follow_redirects=True)
         data=response.get_data(as_text=True)
         self.assertIn('Item created.',data)
-        self.assertIn('New Movie.',data)
+        self.assertIn('New Movie',data)
 
         # 测试创建条目操作，但电影标题为空
         response=self.client.post('/',data=dict(
@@ -99,7 +101,7 @@ class WatchlistTestCase(unittest.TestCase):
         # 测试更新页面
         response=self.client.get('/movie/edit/1')
         data=response.get_data(as_text=True)
-        self.assertIn('Edit item.',data)
+        self.assertIn('Edit item',data)
         self.assertIn('Test Movie Title',data)
         self.assertIn('2025',data)
 
@@ -135,7 +137,7 @@ class WatchlistTestCase(unittest.TestCase):
     def test_delete_item(self):
         self.login()
 
-        response=self.client.post('/post/delete/1',follow_redirects=True)
+        response=self.client.post('/movie/delete/1',follow_redirects=True)
         data=response.get_data(as_text=True)
         self.assertIn('Item deleted.',data)
         self.assertNotIn('Test Movie Title',data)
@@ -171,7 +173,7 @@ class WatchlistTestCase(unittest.TestCase):
         ),follow_redirects=True)
         data=response.get_data(as_text=True)
         self.assertNotIn('Login success',data)
-        self.assertIn('Invalid input',data)
+        self.assertIn('Invalid username or password.',data)
 
         # 测试使用错误的用户名登录
         response = self.client.post('/login', data=dict(
@@ -204,7 +206,7 @@ class WatchlistTestCase(unittest.TestCase):
     def test_logout(self):
         self.login()
 
-        response=self.client.get('/logout',follow_redirected=True)
+        response=self.client.get('/logout',follow_redirects=True)
         data=response.get_data(as_text=True)
         self.assertIn('Goodbye.', data)
         self.assertNotIn('Logout', data)
@@ -226,7 +228,7 @@ class WatchlistTestCase(unittest.TestCase):
         # 测试更新设置
         response=self.client.post('/settings',data=dict(
             name='qing',
-        ),follow_redirect=True)
+        ),follow_redirects=True)
         data=response.get_data(as_text=True)
         self.assertIn('Settings updated.',data)
         self.assertIn('qing',data)

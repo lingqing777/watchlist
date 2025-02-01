@@ -6,13 +6,6 @@ body {
     font-family: Helvetica, Arial, sans-serif;
 }
 
-/* 页脚 */
-footer {
-    color: #888;
-    margin-top: 15px;
-    text-align: center;
-    padding: 10px;
-}
 
 /* 头像 */
 .avatar {
@@ -117,4 +110,12 @@ input[name=year]{
 }
 .inline-form{
     display: inline;
+}
+
+/* 页脚 */
+footer {
+    color: #888;
+    margin-top: 15px;
+    text-align: center;
+    padding: 10px;
 }
